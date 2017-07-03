@@ -56,11 +56,6 @@ public class Unit : IQPathUnit
     private Queue<Hex> path;
 
     /// <summary>
-    /// Current queued path for this unit (including current tile).
-    /// </summary>
-    private Hex[] pathArray;
-
-    /// <summary>
     /// Use Civilization 6 movement rules (only enter tile if all needed movement is available).
     /// If not: use Civilization 5 movement rules (enter tile if some movement is still available).
     /// 
@@ -96,7 +91,6 @@ public class Unit : IQPathUnit
     /// <param name="tiles">Array of tiles</param>
     public void SetPath(Hex[] tiles)
     {
-        pathArray = tiles;
         path = new Queue<Hex>(tiles);
 
         if(path.Count > 0)
@@ -109,7 +103,17 @@ public class Unit : IQPathUnit
     /// <returns>Current path</returns>
     public Hex[] GetPath()
     {
-        return pathArray;
+        if(path == null)
+            return null;
+
+        List<Hex> pathList = new List<Hex>();
+        pathList.Add(Hex);
+        foreach(Hex hex in path)
+        {
+            pathList.Add(hex);
+        }
+
+        return pathList.ToArray();
     }
 
     /// <summary>

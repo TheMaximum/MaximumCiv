@@ -170,7 +170,20 @@ public class MouseController : MonoBehaviour
 
         // Also clean up UI if needed.
         selectedUnit = null;
-        lineRenderer.enabled = false;
+        //lineRenderer.enabled = false;
+        clearPathUI();
+    }
+
+    private void clearPathUI()
+    {
+        if(unitPath == null)
+            return;
+
+        foreach(Hex tile in unitPath)
+        {
+            GameObject tileObject = map.GetGameObjectFromTile(tile);
+            tileObject.transform.GetChild(2).gameObject.SetActive(false);
+        }
     }
 
     /// <summary>
@@ -192,6 +205,7 @@ public class MouseController : MonoBehaviour
 
         if(unitPath == null || tileUnderMouse != lastTileUnderMouse)
         {
+            clearPathUI();
             unitPath = QPath.QPath.FindPath<Hex>(map, selectedUnit, selectedUnit.Hex, tileUnderMouse, Hex.CostEstimate);
             drawPath(unitPath);
         }
@@ -203,23 +217,35 @@ public class MouseController : MonoBehaviour
     /// <param name="path">Path to be drawn</param>
     private void drawPath(Hex[] path)
     {
-        if(path.Length == 0)
+        if(path.Length < 2)
         {
-            lineRenderer.enabled = false;
+            clearPathUI();
             return;
         }
 
-        lineRenderer.enabled = true;
-        Vector3[] positions = new Vector3[path.Length];
-
-        for(int tileNo = 0; tileNo < path.Length; tileNo++)
+        foreach(Hex tile in path)
         {
-            GameObject tileObject = map.GetGameObjectFromTile(path[tileNo]);
-            positions[tileNo] = tileObject.transform.position + (Vector3.up * 0.01f);
+            GameObject tileObject = map.GetGameObjectFromTile(tile);
+            tileObject.transform.GetChild(2).gameObject.SetActive(true);
         }
 
-        lineRenderer.positionCount = positions.Length;
-        lineRenderer.SetPositions(positions);
+        //if(path.Length == 0)
+        //{
+        //    lineRenderer.enabled = false;
+        //    return;
+        //}
+
+        //lineRenderer.enabled = true;
+        //Vector3[] positions = new Vector3[path.Length];
+
+        //for(int tileNo = 0; tileNo < path.Length; tileNo++)
+        //{
+        //    GameObject tileObject = map.GetGameObjectFromTile(path[tileNo]);
+        //    positions[tileNo] = tileObject.transform.position + (Vector3.up * 0.01f);
+        //}
+
+        //lineRenderer.positionCount = positions.Length;
+        //lineRenderer.SetPositions(positions);
     }
 
     /// <summary>
