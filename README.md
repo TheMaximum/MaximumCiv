@@ -1,4 +1,4 @@
-![MaximumCiv](http://dump.klaversma.eu/maximumciv.jpg)
+![MaximumCiv](http://dump.klaversma.eu/maximumciv-header.jpg)
 
 # MaximumCiv
 Civilization based, Unity-built 4X game.
