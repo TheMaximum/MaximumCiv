@@ -61,7 +61,7 @@ public class Unit : IQPathUnit
     /// 
     /// TODO: move to configuration
     /// </summary>
-    private const bool MOVEMENT_RULES_LIKE_CIV6 = false;
+    private const bool MOVEMENT_RULES_LIKE_CIV6 = true;
 
     /// <summary>
     /// Change location of unit.
@@ -230,18 +230,5 @@ public class Unit : IQPathUnit
     public float CostToEnterTile(IQPathTile sourceTile, IQPathTile destinationTile)
     {
         return 1;
-    }
-
-    public void DUMMY_PATHING_FUNCTION()
-    {
-        Hex[] path = QPath.QPath.FindPath<Hex>(
-            Hex.Map,
-            this,
-            Hex,
-            Hex.Map.GetHexAt(Hex.Q + 6, Hex.R),
-            Hex.CostEstimate
-        );
-
-        SetPath(path);
     }
 }

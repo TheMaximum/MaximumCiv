@@ -101,13 +101,13 @@ public class HexMap : MonoBehaviour, IQPathWorld
     /// Minimum moisture to spawn jungle on tile.
     /// </summary>
     [System.NonSerialized]
-    public float MoistureJungle = 0.66f;
+    public float MoistureJungle = 0.50f;
 
     /// <summary>
     /// Minimum moisture to spawn forest on tile.
     /// </summary>
     [System.NonSerialized]
-    public float MoistureForest = 0.33f;
+    public float MoistureForest = 0.20f;
 
     /// <summary>
     /// Minimum moisture to spawn grasslands on tile.
@@ -204,17 +204,6 @@ public class HexMap : MonoBehaviour, IQPathWorld
                 }
             }
         }
-
-        if(Input.GetKeyDown(KeyCode.P))
-        {
-            if(units != null)
-            {
-                foreach(Unit unit in units)
-                {
-                    unit.DUMMY_PATHING_FUNCTION();
-                }
-            }
-        }
     }
 
     /// <summary>
@@ -255,7 +244,6 @@ public class HexMap : MonoBehaviour, IQPathWorld
 		}
 		catch
 		{
-			Debug.LogError("GetHexAt: " + x + "," + y);
 			return null;
 		}
 	}
@@ -410,7 +398,9 @@ public class HexMap : MonoBehaviour, IQPathWorld
                     hex.MovementCost = -1;
                 }
 
-                hexGameObject.GetComponentInChildren<TextMesh>().text = string.Format("{0},{1}\n{2}", column, row, hex.BaseMovementCost());
+                TextMesh tileText = hexGameObject.GetComponentInChildren<TextMesh>();
+                if(tileText != null)
+                    tileText.text = string.Format("{0},{1}\n{2}", column, row, hex.BaseMovementCost());
             }
 		}
 	}

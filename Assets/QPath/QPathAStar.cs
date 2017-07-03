@@ -159,6 +159,12 @@ namespace QPath
             // At this point, total_path is a queue that is running
             // backwards from the END tile to the START tile, so let's reverse it.
             path = new Queue<T>(totalPath.Reverse());
+
+            Debug.Log("Path:");
+            foreach(T tile in path)
+            {
+                Debug.Log(tile);
+            }
         }
 
         /// <summary>

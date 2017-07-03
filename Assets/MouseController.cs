@@ -170,7 +170,6 @@ public class MouseController : MonoBehaviour
 
         // Also clean up UI if needed.
         selectedUnit = null;
-        //lineRenderer.enabled = false;
         clearPathUI();
     }
 
@@ -183,6 +182,7 @@ public class MouseController : MonoBehaviour
         {
             GameObject tileObject = map.GetGameObjectFromTile(tile);
             tileObject.transform.GetChild(2).gameObject.SetActive(false);
+            tileObject.transform.GetChild(3).gameObject.SetActive(false);
         }
     }
 
@@ -226,26 +226,22 @@ public class MouseController : MonoBehaviour
         foreach(Hex tile in path)
         {
             GameObject tileObject = map.GetGameObjectFromTile(tile);
+
+            if(tile != path[0])
+            {
+                TextMesh[] meshes = tileObject.GetComponentsInChildren<TextMesh>(true);
+                foreach(TextMesh mesh in meshes)
+                {
+                    if(mesh.name == "HexMovementLabel")
+                    {
+                        tileObject.transform.GetChild(3).gameObject.SetActive(true);
+                        mesh.text = string.Format("{0}", tile.MovementCost);
+                    }
+                }
+            }
+
             tileObject.transform.GetChild(2).gameObject.SetActive(true);
         }
-
-        //if(path.Length == 0)
-        //{
-        //    lineRenderer.enabled = false;
-        //    return;
-        //}
-
-        //lineRenderer.enabled = true;
-        //Vector3[] positions = new Vector3[path.Length];
-
-        //for(int tileNo = 0; tileNo < path.Length; tileNo++)
-        //{
-        //    GameObject tileObject = map.GetGameObjectFromTile(path[tileNo]);
-        //    positions[tileNo] = tileObject.transform.position + (Vector3.up * 0.01f);
-        //}
-
-        //lineRenderer.positionCount = positions.Length;
-        //lineRenderer.SetPositions(positions);
     }
 
     /// <summary>
