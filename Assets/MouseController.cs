@@ -125,6 +125,9 @@ public class MouseController : MonoBehaviour
         }
         else if(Input.GetMouseButtonUp(0))
         {
+            GameObject tileObject = map.GetGameObjectFromTile(tileUnderMouse);
+            tileObject.transform.GetChild(2).gameObject.SetActive(true);
+
             // TODO: Implement cycling through multiple units on same tile.
             Unit[] units = tileUnderMouse.Units();
             if(selectedUnit == null)
@@ -176,6 +179,9 @@ public class MouseController : MonoBehaviour
         // Also clean up UI if needed.
         selectedUnit = null;
         clearPathUI();
+
+        GameObject tileObject = map.GetGameObjectFromTile(tileUnderMouse);
+        tileObject.transform.GetChild(2).gameObject.SetActive(false);
     }
 
     /// <summary>
