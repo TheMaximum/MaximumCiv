@@ -18,7 +18,7 @@ namespace QPath
         /// <param name="destinationTile">Destintation position</param>
         /// <param name="costEstimateFunction">Cost estimation function</param>
         /// <returns>Path (list of tiles)</returns>
-        public static T[] FindPath<T>(
+        public static ArrayList FindPath<T>(
             IQPathWorld world,
             IQPathUnit unit,
             T startTile,

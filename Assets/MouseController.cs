@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -65,7 +66,7 @@ public class MouseController : MonoBehaviour
     /// <summary>
     /// Current path for UnitMovement function.
     /// </summary>
-    private Hex[] unitPath;
+    private ArrayList unitPath;
 
     /// <summary>
     /// Line renderer for unit paths.
@@ -131,8 +132,10 @@ public class MouseController : MonoBehaviour
                 if(units != null && units.Length > 0)
                 {
                     selectedUnit = units[0];
-                    Hex[] selectedUnitPath = selectedUnit.GetPath();
-                    if(selectedUnitPath != null && selectedUnitPath.Length > 0)
+                    ArrayList selectedUnitPath = selectedUnit.GetPath();
+                    Hex[] selectedUnitPathTiles = ((Hex[])selectedUnitPath[0]);
+
+                    if(selectedUnitPath != null && selectedUnitPathTiles.Length > 0)
                     {
                         drawPath(selectedUnitPath);
                     }
@@ -173,12 +176,15 @@ public class MouseController : MonoBehaviour
         clearPathUI();
     }
 
+    /// <summary>
+    /// Clear the path interface.
+    /// </summary>
     private void clearPathUI()
     {
         if(unitPath == null)
             return;
 
-        foreach(Hex tile in unitPath)
+        foreach(Hex tile in (Hex[])unitPath[0])
         {
             GameObject tileObject = map.GetGameObjectFromTile(tile);
             tileObject.transform.GetChild(2).gameObject.SetActive(false);
@@ -215,29 +221,41 @@ public class MouseController : MonoBehaviour
     /// Draw provided path with lines on map.
     /// </summary>
     /// <param name="path">Path to be drawn</param>
-    private void drawPath(Hex[] path)
+    private void drawPath(ArrayList path)
     {
-        if(path.Length < 2)
+        if(((Hex[])path[0]).Length < 2)
         {
             clearPathUI();
             return;
         }
 
-        foreach(Hex tile in path)
+        Hex[] pathTiles = (Hex[])path[0];
+        Dictionary<Hex, float> pathCosts = (Dictionary<Hex, float>)path[1];
+
+        float previousTileTurns = 0.0f;
+
+        for(int tileId = 0; tileId < pathTiles.Length; tileId++)
         {
+            Hex tile = pathTiles[tileId];
             GameObject tileObject = map.GetGameObjectFromTile(tile);
 
             if(tile != path[0])
             {
                 TextMesh[] meshes = tileObject.GetComponentsInChildren<TextMesh>(true);
-                foreach(TextMesh mesh in meshes)
-                {
-                    if(mesh.name == "HexMovementLabel")
-                    {
-                        tileObject.transform.GetChild(3).gameObject.SetActive(true);
-                        mesh.text = string.Format("{0}", tile.MovementCost);
-                    }
+                TextMesh mesh = meshes.First(textMesh => textMesh.name == "HexMovementLabel");
+
+                if(Mathf.Floor(pathCosts[tile]) > Mathf.Floor(previousTileTurns))
+                {                    
+                    tileObject.transform.GetChild(3).gameObject.SetActive(true);
+                    mesh.text = string.Format("{0}", pathCosts[tile]);
                 }
+                else if(pathTiles.Length > (tileId + 1) && Mathf.Ceil(pathCosts[pathTiles[tileId + 1]]) > Mathf.Ceil(pathCosts[tile]))
+                {
+                    tileObject.transform.GetChild(3).gameObject.SetActive(true);
+                    mesh.text = string.Format("{0}", Mathf.Ceil(pathCosts[tile]));
+                }
+
+                previousTileTurns = pathCosts[tile];
             }
 
             tileObject.transform.GetChild(2).gameObject.SetActive(true);

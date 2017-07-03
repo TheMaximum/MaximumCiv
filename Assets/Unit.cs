@@ -55,6 +55,8 @@ public class Unit : IQPathUnit
     /// </summary>
     private Queue<Hex> path;
 
+    private Dictionary<Hex, float> pathCost;
+
     /// <summary>
     /// Use Civilization 6 movement rules (only enter tile if all needed movement is available).
     /// If not: use Civilization 5 movement rules (enter tile if some movement is still available).
@@ -89,9 +91,11 @@ public class Unit : IQPathUnit
     /// Set unit path.
     /// </summary>
     /// <param name="tiles">Array of tiles</param>
-    public void SetPath(Hex[] tiles)
+    public void SetPath(ArrayList tiles)
     {
-        path = new Queue<Hex>(tiles);
+        Hex[] pathTiles = (Hex[])tiles[0];
+        pathCost = (Dictionary<Hex, float>)tiles[1];
+        path = new Queue<Hex>(pathTiles);
 
         if(path.Count > 0)
             path.Dequeue(); // Dequeue current tile (first in queue).
@@ -101,7 +105,7 @@ public class Unit : IQPathUnit
     /// Get current path for unit.
     /// </summary>
     /// <returns>Current path</returns>
-    public Hex[] GetPath()
+    public ArrayList GetPath()
     {
         if(path == null)
             return null;
@@ -113,7 +117,8 @@ public class Unit : IQPathUnit
             pathList.Add(hex);
         }
 
-        return pathList.ToArray();
+        Debug.Log("Path list, length: " + pathList.Count);
+        return new ArrayList() { pathList.ToArray(), pathCost };
     }
 
     /// <summary>
@@ -121,7 +126,7 @@ public class Unit : IQPathUnit
     /// </summary>
     public void ClearPath()
     {
-        SetPath(new Hex[0]);
+        SetPath(new ArrayList() { new Hex[0], new Dictionary<Hex, float>() });
     }
 
     /// <summary>

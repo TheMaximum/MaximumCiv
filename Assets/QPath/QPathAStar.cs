@@ -40,6 +40,8 @@ namespace QPath
         /// </summary>
         private Queue<T> path;
 
+        private Dictionary<T, float> gScore = new Dictionary<T, float>();
+
         /// <summary>
         /// Instantiate class and set parameters.
         /// </summary>
@@ -75,7 +77,7 @@ namespace QPath
 
             Dictionary<T, T> cameFrom = new Dictionary<T, T>();
 
-            Dictionary<T, float> gScore = new Dictionary<T, float>();
+            /*Dictionary<T, float> */gScore = new Dictionary<T, float>();
             gScore[startTile] = 0;
 
             Dictionary<T, float> fScore = new Dictionary<T, float>();
@@ -163,7 +165,7 @@ namespace QPath
             Debug.Log("Path:");
             foreach(T tile in path)
             {
-                Debug.Log(tile);
+                Debug.Log(tile + ", cost: " + gScore[tile]);
             }
         }
 
@@ -171,9 +173,10 @@ namespace QPath
         /// Get path to be taken.
         /// </summary>
         /// <returns>List of tiles to go through</returns>
-        public T[] GetList()
+        public ArrayList GetList()
         {
-            return path.ToArray();
+            ArrayList list = new ArrayList() { path.ToArray(), gScore };
+            return list;
         }
     }
 }
