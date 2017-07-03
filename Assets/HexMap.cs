@@ -240,6 +240,9 @@ public class HexMap : MonoBehaviour, IQPathWorld
 
 		try
 		{
+            if(x < 0 || y < 0)
+                return null;
+
 			return hexes[x, y];
 		}
 		catch

@@ -138,9 +138,50 @@ public class Unit : IQPathUnit
         if(path == null || path.Count == 0)
             return;
 
+        // Determine which moves can be made.
+        List<Hex> movesThisTurn = new List<Hex>();
+        float totalMovement = 0.0f;
+        int moves = 0;
+        bool movesDiscovered = false;
+
+        foreach(Hex hex in path)
+        {
+            if(!movesDiscovered)
+            {
+                float turnMovement = AggregateTurnsToEnterHex(hex, totalMovement);
+                if(turnMovement > 1)
+                {
+                    if(!MOVEMENT_RULES_LIKE_CIV6)
+                    {
+                        movesThisTurn.Add(hex);
+                        totalMovement += turnMovement;
+                        moves++;
+                    }
+                    else
+                    {
+                        pathCost[hex] -= 1.0f;
+                    }
+
+                    movesDiscovered = true;
+                    continue;
+                }
+
+                movesThisTurn.Add(hex);
+                totalMovement += turnMovement;
+                moves++;
+            }
+            else
+            {
+                pathCost[hex] -= 1.0f;
+            }
+        }
+
         // Move to next tile in queue.
-        Hex newHex = path.Dequeue();
-        SetHex(newHex);
+        for(int makeMoves = 0; makeMoves < moves; makeMoves++)
+        {
+            Hex newHex = path.Dequeue();
+            SetHex(newHex);
+        }
     }
 
     /// <summary>
