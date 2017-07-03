@@ -126,11 +126,25 @@ public class MouseController : MonoBehaviour
         {
             // TODO: Implement cycling through multiple units on same tile.
             Unit[] units = tileUnderMouse.Units();
-            if(units.Length > 0)
+            if(selectedUnit == null)
             {
-                selectedUnit = units[0];
+                if(units != null && units.Length > 0)
+                {
+                    selectedUnit = units[0];
+                    Hex[] selectedUnitPath = selectedUnit.GetPath();
+                    if(selectedUnitPath != null && selectedUnitPath.Length > 0)
+                    {
+                        drawPath(selectedUnitPath);
+                    }
+                }
             }
-
+            else
+            {
+                cancelUpdateFunction();
+            }
+        }
+        else if(Input.GetMouseButtonDown(1) && selectedUnit != null)
+        {
             updateCurrentFunction = updateUnitMovement;
         }
         else if(Input.GetMouseButton(0) && Vector3.Distance(Input.mousePosition, lastMousePosition) > dragBarrier)
@@ -156,6 +170,7 @@ public class MouseController : MonoBehaviour
 
         // Also clean up UI if needed.
         selectedUnit = null;
+        lineRenderer.enabled = false;
     }
 
     /// <summary>

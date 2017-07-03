@@ -248,6 +248,9 @@ public class Hex : IQPathTile
     /// <returns>Array of units</returns>
     public Unit[] Units()
     {
+        if(units == null)
+            return null;
+
         return units.ToArray();
     }
 
