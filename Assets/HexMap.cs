@@ -244,6 +244,7 @@ public class HexMap : MonoBehaviour, IQPathWorld
 		}
 		catch
 		{
+            Debug.LogError("Can't retrieve hex at (" + x + "," + y + ")");
 			return null;
 		}
 	}

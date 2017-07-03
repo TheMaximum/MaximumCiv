@@ -73,12 +73,12 @@ namespace QPath
 
             HashSet<T> closedSet = new HashSet<T>();
             PathfindingPriorityQueue<T> openSet = new PathfindingPriorityQueue<T>();
-            openSet.Enqueue(startTile, 0);
+            openSet.Enqueue(startTile, 0.0f);
 
             Dictionary<T, T> cameFrom = new Dictionary<T, T>();
 
             /*Dictionary<T, float> */gScore = new Dictionary<T, float>();
-            gScore[startTile] = 0;
+            gScore[startTile] = 0.0f;
 
             Dictionary<T, float> fScore = new Dictionary<T, float>();
             fScore[startTile] = costEstimateFunction(startTile, destinationTile);
@@ -108,28 +108,26 @@ namespace QPath
 
                     float totalPathfindingCostToNeighbour = neighbour.AggregateCostToEnter(gScore[current], current, unit);
 
-                    if(totalPathfindingCostToNeighbour < 0)
+                    if(totalPathfindingCostToNeighbour < 0.0f)
                     {
                         // Values less than zero represent an invalid/impassable tile
                         continue;
                     }
 
-                    float tentativeGScore = totalPathfindingCostToNeighbour;
-
                     // Is the neighbour already in the open set?
                     //   If so, and if this new score is worse than the old score,
                     //   discard this new result.
-                    if(openSet.Contains(neighbour) && tentativeGScore >= gScore[neighbour])
+                    if(openSet.Contains(neighbour) && totalPathfindingCostToNeighbour >= gScore[neighbour])
                     {
                         continue;
                     }
 
                     // This is either a new tile or we just found a cheaper route to it
                     cameFrom[neighbour] = current;
-                    gScore[neighbour] = tentativeGScore;
+                    gScore[neighbour] = totalPathfindingCostToNeighbour;
                     fScore[neighbour] = gScore[neighbour] + costEstimateFunction(neighbour, destinationTile);
 
-                    openSet.EnqueueOrUpdate(neighbour, fScore[neighbour]);
+                    openSet.EnqueueOrUpdate(neighbour, gScore[neighbour]);
                 }
             }
         }
@@ -161,12 +159,6 @@ namespace QPath
             // At this point, total_path is a queue that is running
             // backwards from the END tile to the START tile, so let's reverse it.
             path = new Queue<T>(totalPath.Reverse());
-
-            Debug.Log("Path:");
-            foreach(T tile in path)
-            {
-                Debug.Log(tile + ", cost: " + gScore[tile]);
-            }
         }
 
         /// <summary>

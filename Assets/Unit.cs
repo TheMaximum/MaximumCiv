@@ -117,7 +117,6 @@ public class Unit : IQPathUnit
             pathList.Add(hex);
         }
 
-        Debug.Log("Path list, length: " + pathList.Count);
         return new ArrayList() { pathList.ToArray(), pathCost };
     }
 
@@ -165,23 +164,25 @@ public class Unit : IQPathUnit
     {
         float baseTurnsToEnter = (float)MovementCostToEnterHex(tile) / Movement;
 
-        if(baseTurnsToEnter < 0)
+        if(baseTurnsToEnter < 0.0f)
         {
-            return -99999;
+            return -99999.0f;
         }
 
         // If enter cost is bigger than unit movement, use unit movement as enter cost.
-        if(baseTurnsToEnter > 1)
-            baseTurnsToEnter = 1;
+        if(baseTurnsToEnter > 1.0f)
+        {
+            baseTurnsToEnter = 1.0f;
+        }
 
-        float turnsRemaining = MovementRemaining / Movement;
+        float turnsRemaining = (float)MovementRemaining / Movement;
 
         float turnsToDateWhole = Mathf.Floor(turnsToDate);
         float turnsToDateFraction = turnsToDate - turnsToDateWhole;
 
         // Resolve floating-point drift if it occurs.
-        if((turnsToDateFraction < 0.01f && turnsToDateFraction > 0) || 
-           (turnsToDateFraction > 0.99f && turnsToDateFraction < 1))
+        if((turnsToDateFraction < 0.01f && turnsToDateFraction > 0.0f) || 
+           (turnsToDateFraction > 0.99f && turnsToDateFraction < 1.0f))
         {
             Debug.LogError("Looks like we have floating-point drift.");
 
@@ -196,7 +197,7 @@ public class Unit : IQPathUnit
         }
 
         float turnsUsedAfterThisMove = turnsToDateFraction + baseTurnsToEnter;
-        if(turnsUsedAfterThisMove > 1)
+        if(turnsUsedAfterThisMove > 1.0f)
         {
             // Not enough movement to complete move.
 
@@ -210,8 +211,8 @@ public class Unit : IQPathUnit
                 else
                 {
                     // Not a fresh turn, remain idle for remainder of the turn.
-                    turnsToDateWhole += 1;
-                    turnsToDateFraction = 0;
+                    turnsToDateWhole += 1.0f;
+                    turnsToDateFraction = 0.0f;
                 }
 
                 turnsUsedAfterThisMove = baseTurnsToEnter;
@@ -219,7 +220,7 @@ public class Unit : IQPathUnit
             else
             {
                 // Civilization 5 style movement, can always enter the tile, even if we don't have enough movement left.
-                turnsUsedAfterThisMove = 1;
+                turnsUsedAfterThisMove = 1.0f;
             }
         }
 

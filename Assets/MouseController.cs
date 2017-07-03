@@ -133,11 +133,13 @@ public class MouseController : MonoBehaviour
                 {
                     selectedUnit = units[0];
                     ArrayList selectedUnitPath = selectedUnit.GetPath();
-                    Hex[] selectedUnitPathTiles = ((Hex[])selectedUnitPath[0]);
-
-                    if(selectedUnitPath != null && selectedUnitPathTiles.Length > 0)
+                    if(selectedUnitPath != null && selectedUnitPath[0] != null)
                     {
-                        drawPath(selectedUnitPath);
+                        Hex[] selectedUnitPathTiles = ((Hex[])selectedUnitPath[0]);
+                        if(selectedUnitPathTiles.Length > 0)
+                        {
+                            drawPath(selectedUnitPath);
+                        }
                     }
                 }
             }
@@ -239,7 +241,7 @@ public class MouseController : MonoBehaviour
             Hex tile = pathTiles[tileId];
             GameObject tileObject = map.GetGameObjectFromTile(tile);
 
-            if(tile != path[0])
+            if(tile != pathTiles[0])
             {
                 TextMesh[] meshes = tileObject.GetComponentsInChildren<TextMesh>(true);
                 TextMesh mesh = meshes.First(textMesh => textMesh.name == "HexMovementLabel");
@@ -259,6 +261,16 @@ public class MouseController : MonoBehaviour
             }
 
             tileObject.transform.GetChild(2).gameObject.SetActive(true);
+        }
+
+        Hex lastTile = pathTiles[(pathTiles.Length - 1)];
+        GameObject lastTileObject = map.GetGameObjectFromTile(lastTile);
+        if(!lastTileObject.transform.GetChild(3).gameObject.activeSelf)
+        {
+            TextMesh[] meshes = lastTileObject.GetComponentsInChildren<TextMesh>(true);
+            TextMesh mesh = meshes.First(textMesh => textMesh.name == "HexMovementLabel");
+            lastTileObject.transform.GetChild(3).gameObject.SetActive(true);
+            mesh.text = string.Format("{0}", Mathf.Ceil(previousTileTurns));
         }
     }
 
