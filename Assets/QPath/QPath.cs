@@ -19,20 +19,19 @@ namespace QPath
         /// <param name="costEstimateFunction">Cost estimation function</param>
         /// <returns>Path (list of tiles)</returns>
         public static ArrayList FindPath<T>(
-            IQPathWorld world,
             IQPathUnit unit,
             T startTile,
             T destinationTile,
             CostEstimateDelegate costEstimateFunction
         ) where T : IQPathTile
         {
-            if(world == null || unit == null || startTile == null || destinationTile == null)
+            if(unit == null || startTile == null || destinationTile == null)
             {
                 Debug.LogError("Null value passed to QPath::FindPath.");
                 return null;
             }
 
-            QPathAStar<T> resolver = new QPathAStar<T>(world, unit, startTile, destinationTile, costEstimateFunction);
+            QPathAStar<T> resolver = new QPathAStar<T>(unit, startTile, destinationTile, costEstimateFunction);
             resolver.DoWork();
             return resolver.GetList();
         }

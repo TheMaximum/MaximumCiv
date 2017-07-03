@@ -213,8 +213,6 @@ public class Unit : IQPathUnit
             baseTurnsToEnter = 1.0f;
         }
 
-        float turnsRemaining = (float)MovementRemaining / Movement;
-
         float turnsToDateWhole = Mathf.Floor(turnsToDate);
         float turnsToDateFraction = turnsToDate - turnsToDateWhole;
 

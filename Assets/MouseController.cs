@@ -69,11 +69,6 @@ public class MouseController : MonoBehaviour
     private ArrayList unitPath;
 
     /// <summary>
-    /// Line renderer for unit paths.
-    /// </summary>
-    private LineRenderer lineRenderer;
-
-    /// <summary>
     /// Delegate for function to be called by Update().
     /// </summary>
     private delegate void UpdateFunction();
@@ -84,13 +79,17 @@ public class MouseController : MonoBehaviour
     private UpdateFunction updateCurrentFunction;
 
     /// <summary>
+    /// Current highlighted tile.
+    /// </summary>
+    private GameObject highlightedTile;
+
+    /// <summary>
     /// Initializes the class.
     /// </summary>
     public void Start()
     {
         updateCurrentFunction = detectUpdateMode;
         map = GameObject.FindObjectOfType<HexMap>();
-        lineRenderer = transform.GetComponentInChildren<LineRenderer>();
     }
 
     /// <summary>
@@ -125,8 +124,24 @@ public class MouseController : MonoBehaviour
         }
         else if(Input.GetMouseButtonUp(0))
         {
-            GameObject tileObject = map.GetGameObjectFromTile(tileUnderMouse);
-            tileObject.transform.GetChild(2).gameObject.SetActive(true);
+            if(highlightedTile != null)
+            {
+                if(highlightedTile != map.GetGameObjectFromTile(tileUnderMouse))
+                {
+                    highlightedTile = map.GetGameObjectFromTile(tileUnderMouse);
+                    highlightedTile.transform.GetChild(2).gameObject.SetActive(true);
+                }
+                else
+                {
+                    highlightedTile.transform.GetChild(2).gameObject.SetActive(false);
+                    highlightedTile = null;
+                }
+            }
+            else
+            {
+                highlightedTile = map.GetGameObjectFromTile(tileUnderMouse);
+                highlightedTile.transform.GetChild(2).gameObject.SetActive(true);
+            }
 
             // TODO: Implement cycling through multiple units on same tile.
             Unit[] units = tileUnderMouse.Units();
@@ -220,7 +235,7 @@ public class MouseController : MonoBehaviour
         if(unitPath == null || tileUnderMouse != lastTileUnderMouse)
         {
             clearPathUI();
-            unitPath = QPath.QPath.FindPath<Hex>(map, selectedUnit, selectedUnit.Hex, tileUnderMouse, Hex.CostEstimate);
+            unitPath = QPath.QPath.FindPath<Hex>(selectedUnit, selectedUnit.Hex, tileUnderMouse, Hex.CostEstimate);
             drawPath(unitPath);
         }
     }

@@ -11,11 +11,6 @@ namespace QPath
     public class QPathAStar<T> where T : IQPathTile
     {
         /// <summary>
-        /// World map.
-        /// </summary>
-        private IQPathWorld world;
-
-        /// <summary>
         /// Unit to be moved.
         /// </summary>
         private IQPathUnit unit;
@@ -51,13 +46,11 @@ namespace QPath
         /// <param name="destinationTile">Destination position</param>
         /// <param name="costEstimateFunction">Cost estimation function</param>
         public QPathAStar(
-            IQPathWorld world, 
             IQPathUnit unit, 
             T startTile, 
             T destinationTile,
             CostEstimateDelegate costEstimateFunction)
         {
-            this.world = world;
             this.unit = unit;
             this.startTile = startTile;
             this.destinationTile = destinationTile;
