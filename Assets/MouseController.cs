@@ -258,7 +258,7 @@ public class MouseController : MonoBehaviour
     /// <param name="path">Path to be drawn</param>
     private void drawPath(ArrayList path)
     {
-        if(((Hex[])path[0]).Length < 2)
+        if(((Hex[])path[0]).Length < 1)
         {
             clearPathUI();
             return;
