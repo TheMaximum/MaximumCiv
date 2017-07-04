@@ -76,7 +76,11 @@ public class HexMapContinent : HexMap
 
         Unit unit = new Unit();
         SpawnUnitAt(unit, UnitDwarfPrefab, 36, 15);
-	}
+
+        Unit newUnit = new Unit();
+        newUnit.Movement = 4;
+        SpawnUnitAt(newUnit, UnitDwarfPrefab, 37, 15);
+    }
 
     /// <summary>
     /// Elevate area on map around point.

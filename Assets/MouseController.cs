@@ -124,24 +124,7 @@ public class MouseController : MonoBehaviour
         }
         else if(Input.GetMouseButtonUp(0))
         {
-            if(highlightedTile != null)
-            {
-                if(highlightedTile != map.GetGameObjectFromTile(tileUnderMouse))
-                {
-                    highlightedTile = map.GetGameObjectFromTile(tileUnderMouse);
-                    highlightedTile.transform.GetChild(2).gameObject.SetActive(true);
-                }
-                else
-                {
-                    highlightedTile.transform.GetChild(2).gameObject.SetActive(false);
-                    highlightedTile = null;
-                }
-            }
-            else
-            {
-                highlightedTile = map.GetGameObjectFromTile(tileUnderMouse);
-                highlightedTile.transform.GetChild(2).gameObject.SetActive(true);
-            }
+            highlightTile(tileUnderMouse);
 
             // TODO: Implement cycling through multiple units on same tile.
             Unit[] units = tileUnderMouse.Units();
@@ -154,7 +137,7 @@ public class MouseController : MonoBehaviour
                     if(selectedUnitPath != null && selectedUnitPath[0] != null)
                     {
                         Hex[] selectedUnitPathTiles = ((Hex[])selectedUnitPath[0]);
-                        if(selectedUnitPathTiles.Length > 0)
+                        if(selectedUnitPathTiles.Length > 1)
                         {
                             drawPath(selectedUnitPath);
                         }
@@ -181,6 +164,35 @@ public class MouseController : MonoBehaviour
         {
             // Got unit, holding down right mouse button - unit moving mode.
 
+        }
+    }
+
+    /// <summary>
+    /// Highlight (or disable highlighting) provided tile.
+    /// </summary>
+    /// <param name="tile">Tile to be highlighted</param>
+    private void highlightTile(Hex tile)
+    {
+        GameObject currentTile = map.GetGameObjectFromTile(tile);
+
+        if(highlightedTile != null)
+        {
+            if(highlightedTile != currentTile)
+            {
+                highlightedTile.transform.GetChild(2).gameObject.SetActive(false);
+                highlightedTile = currentTile;
+                highlightedTile.transform.GetChild(2).gameObject.SetActive(true);
+            }
+            else
+            {
+                highlightedTile.transform.GetChild(2).gameObject.SetActive(false);
+                highlightedTile = null;
+            }
+        }
+        else
+        {
+            highlightedTile = currentTile;
+            highlightedTile.transform.GetChild(2).gameObject.SetActive(true);
         }
     }
 

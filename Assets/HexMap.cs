@@ -482,7 +482,7 @@ public class HexMap : MonoBehaviour, IQPathWorld
     /// <returns>Tile linked to game object</returns>
     public Hex GetTileFromGameObject(GameObject gameObject)
     {
-        if(gameObjectToHexMap.ContainsKey(gameObject))
+        if(gameObjectToHexMap != null && gameObjectToHexMap.ContainsKey(gameObject))
         {
             return gameObjectToHexMap[gameObject];
         }

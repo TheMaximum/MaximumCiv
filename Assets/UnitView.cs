@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,11 +24,26 @@ public class UnitView : MonoBehaviour
     private float smoothTime = 0.5f;
 
     /// <summary>
+    /// Amount of time one movement takes ((smoothTime * 1000) + 500).
+    /// </summary>
+    private float movementTime;
+
+    /// <summary>
+    /// Previous milliseconds on tile addition.
+    /// </summary>
+    private long lastMillis;
+
+    private Queue<Hex> movementQueue;
+
+    /// <summary>
     /// Initialize positions.
     /// </summary>
     public void Start()
     {
         newPosition = this.transform.position;
+        lastMillis = (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond);
+        movementQueue = new Queue<Hex>();
+        movementTime = (smoothTime * 1000) + 500;
     }
 
     /// <summary>
@@ -36,6 +52,17 @@ public class UnitView : MonoBehaviour
     public void Update()
     {
         this.transform.position = Vector3.SmoothDamp(this.transform.position, newPosition, ref currentVelocity, smoothTime);
+
+        if(movementQueue != null && movementQueue.Count > 0)
+        {
+            long currentMillis = (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond);
+            if(currentMillis > (lastMillis + movementTime))
+            {
+                Hex newHex = movementQueue.Dequeue();
+                changePosition(this.transform.position, newHex.PositionFromCamera());
+                lastMillis = currentMillis;
+            }
+        }
     }
 
     /// <summary>
@@ -45,13 +72,49 @@ public class UnitView : MonoBehaviour
     /// <param name="newHex">New tile location</param>
     public void OnUnitMoved(Hex oldHex, Hex newHex)
     {
-        this.transform.position = oldHex.PositionFromCamera();
-        newPosition = newHex.PositionFromCamera();
+        long currentMillis = (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond);
+        if(currentMillis > (lastMillis + (smoothTime * 1000)) &&
+           movementQueue.Count == 0)
+        {
+            changePosition(oldHex.PositionFromCamera(), newHex.PositionFromCamera());
+            lastMillis = currentMillis;
+        }
+        else
+        {
+            movementQueue.Enqueue(newHex);
+        }
+    }
+
+    /// <summary>
+    /// Changes the in-scene position of the unit.
+    /// </summary>
+    /// <param name="previous">Previous position</param>
+    /// <param name="current">New position</param>
+    private void changePosition(Vector3 previous, Vector3 current)
+    {
+        this.transform.position = previous;
+        newPosition = current;
         currentVelocity = Vector3.zero;
 
-        if(Vector3.Distance(this.transform.position, newPosition) > 2)
+        if(Vector3.Distance(this.transform.position, current) > 2)
         {
-            this.transform.position = newPosition;
+            this.transform.position = current;
         }
+    }
+
+    /// <summary>
+    /// Is the unit finished moving?
+    /// </summary>
+    /// <returns>All moves finished?</returns>
+    public bool UnitFinishedMoving()
+    {
+        if(movementQueue.Count > 0)
+            return false;
+
+        long currentMillis = (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond);
+        if(currentMillis > (lastMillis + movementTime))
+            return true;
+
+        return false;
     }
 }

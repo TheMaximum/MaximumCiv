@@ -156,7 +156,7 @@ public class Unit : IQPathUnit
                     }
                     else
                     {
-                        totalMovement += turnMovement;
+                        totalMovement = turnMovement;
                         moves++;
                     }
 
@@ -164,7 +164,7 @@ public class Unit : IQPathUnit
                     continue;
                 }
 
-                totalMovement += turnMovement;
+                totalMovement = turnMovement;
                 moves++;
             }
             else
