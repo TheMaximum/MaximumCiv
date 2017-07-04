@@ -348,6 +348,7 @@ public class HexMap : MonoBehaviour, IQPathWorld
 							hexGameObject.transform
 						);
 
+                        hex.Vegetation = TileVegetation.Jungle;
                         hex.MovementCost = 2;
 					} 
 					else if(hex.Moisture >= MoistureForest)
@@ -364,18 +365,22 @@ public class HexMap : MonoBehaviour, IQPathWorld
 							hexGameObject.transform
 						);
 
+                        hex.Vegetation = TileVegetation.Forest;
                         hex.MovementCost = 2;
                     } 
 					else if(hex.Moisture >= MoistureGrasslands)
 					{
-						mr.material = MatGrasslands;
+                        hex.Vegetation = TileVegetation.Grassland;
+                        mr.material = MatGrasslands;
 					} 
 					else if(hex.Moisture >= MoisturePlains)
 					{
-						mr.material = MatPlains;
+                        hex.Vegetation = TileVegetation.None;
+                        mr.material = MatPlains;
 					}
 					else
 					{
+                        hex.Vegetation = TileVegetation.Desert;
 						mr.material = MatDesert;
 					}
 				}
@@ -384,20 +389,24 @@ public class HexMap : MonoBehaviour, IQPathWorld
 				{
 					mr.material = MatMountains;
 					mf.mesh = MeshMountain;
+                    hex.Base = TileBase.Mountains;
                     hex.MovementCost = -1;
                 }
 				else if(hex.Elevation >= HeightHill)
 				{
 					mf.mesh = MeshHill;
+                    hex.Base = TileBase.Hills;
                     hex.MovementCost = 2;
                 }
 				else if(hex.Elevation >= HeightFlat)
 				{
-					mf.mesh = MeshFlat;
+                    hex.Base = TileBase.Flat;
+                    mf.mesh = MeshFlat;
 				}
 				else
 				{
-					mr.material = MatOcean;
+                    hex.Base = TileBase.Ocean;
+                    mr.material = MatOcean;
 					mf.mesh = MeshWater;
                     hex.MovementCost = -1;
                 }

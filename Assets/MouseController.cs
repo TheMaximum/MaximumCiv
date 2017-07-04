@@ -279,7 +279,8 @@ public class MouseController : MonoBehaviour
                 TextMesh[] meshes = tileObject.GetComponentsInChildren<TextMesh>(true);
                 TextMesh mesh = meshes.First(textMesh => textMesh.name == "HexMovementLabel");
 
-                if(Mathf.Floor(pathCosts[tile]) > Mathf.Floor(previousTileTurns))
+                if(Mathf.Floor(pathCosts[tile]) > Mathf.Floor(previousTileTurns) &&
+                   Mathf.Floor(pathCosts[tile]) == Mathf.Ceil(pathCosts[tile]))
                 {                    
                     tileObject.transform.GetChild(3).gameObject.SetActive(true);
                     mesh.text = string.Format("{0}", pathCosts[tile]);

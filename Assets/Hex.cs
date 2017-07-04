@@ -6,6 +6,31 @@ using System.Linq;
 using QPath;
 
 /// <summary>
+/// Enumeration containing the possible tile bases.
+/// </summary>
+public enum TileBase
+{
+    Ocean,
+    Water,
+    Flat,
+    Hills,
+    Mountains
+}
+
+/// <summary>
+/// Enumeration containing the possible tile vegetations.
+/// </summary>
+public enum TileVegetation
+{
+    Marsh,
+    None,
+    Grassland,
+    Desert,
+    Forest,
+    Jungle
+}
+
+/// <summary>
 /// Hex class defines the grid position, world-space position, size,
 /// neighbours, etc... of a Hex Tile. However, it does NOT interact
 /// with Unity directly in any way.
@@ -36,6 +61,16 @@ public class Hex : IQPathTile
     /// Tile moisture, used in map gneeration and in-game effects.
     /// </summary>
 	public float Moisture;
+
+    /// <summary>
+    /// Base of the tile.
+    /// </summary>
+    public TileBase Base;
+
+    /// <summary>
+    /// Vegetation on the tile.
+    /// </summary>
+    public TileVegetation Vegetation;
 
     /// <summary>
     /// Movement cost.
