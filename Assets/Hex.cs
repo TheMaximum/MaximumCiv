@@ -232,7 +232,9 @@ public class Hex : IQPathTile
     /// <returns>Distance between tiles</returns>
 	public static float Distance(Hex a, Hex b)
 	{
-		//FIXME: probably wrong for wrapping
+        //FIXME: probably wrong for wrapping
+        if(a == null || b == null)
+            return 0.0f;
 
 		int dQ = Mathf.Abs(a.Q - b.Q);
 		if(a.Map.AllowWrapEastWest)

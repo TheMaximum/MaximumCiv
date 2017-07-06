@@ -51,7 +51,7 @@ public class MouseController : MonoBehaviour
     /// <summary>
     /// Lower limit of camera height.
     /// </summary>
-    private float cameraLimitDown = 2.0f;
+    private float cameraLimitDown = 4.0f;
 
     /// <summary>
     /// Drag barrier (amount of movement before mouse move is considered dragging).
@@ -203,7 +203,8 @@ public class MouseController : MonoBehaviour
         clearPathUI();
 
         GameObject tileObject = map.GetGameObjectFromTile(tileUnderMouse);
-        tileObject.transform.GetChild(2).gameObject.SetActive(false);
+        if(tileObject != null)
+            tileObject.transform.GetChild(2).gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -360,7 +361,7 @@ public class MouseController : MonoBehaviour
 
         // Change camera angle
         Camera.main.transform.rotation = Quaternion.Euler(
-            Mathf.Lerp(30, 75, Camera.main.transform.position.y / cameraLimitUp),
+            Mathf.Lerp(35, 75, Camera.main.transform.position.y / cameraLimitUp),
             Camera.main.transform.rotation.eulerAngles.y,
             Camera.main.transform.rotation.eulerAngles.z
         );

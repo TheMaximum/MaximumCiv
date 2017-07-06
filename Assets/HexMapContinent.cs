@@ -92,9 +92,14 @@ public class HexMapContinent : HexMap
 	{
 		Hex centerHex = GetHexAt(q, r);
 		Hex[] area = GetHexInRange(centerHex, range);
+        if(area == null)
+            return;
 
 		foreach(Hex hex in area)
 		{
+            if(hex == null)
+                continue;
+
 			hex.Elevation = centerHeight * Mathf.Lerp(1f, 0.25f, Mathf.Pow(Hex.Distance(centerHex, hex) / range, 2f));
 		}
 	}

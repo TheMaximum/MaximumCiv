@@ -51,6 +51,9 @@ public class UnitView : MonoBehaviour
     /// </summary>
     public void Update()
     {
+        if(Vector3.Distance(this.transform.position, newPosition) > 2)
+            newPosition = this.transform.position;
+
         this.transform.position = Vector3.SmoothDamp(this.transform.position, newPosition, ref currentVelocity, smoothTime);
 
         if(movementQueue != null && movementQueue.Count > 0)

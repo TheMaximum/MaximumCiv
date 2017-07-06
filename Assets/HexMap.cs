@@ -176,12 +176,12 @@ public class HexMap : MonoBehaviour, IQPathWorld
     /// <summary>
     /// List of units on the map.
     /// </summary>
-    private HashSet<Unit> units;
+    public HashSet<Unit> Units;
 
     /// <summary>
     /// Dictionary to retrieve gameobject of unit.
     /// </summary>
-    private Dictionary<Unit, GameObject> unitToGameObjectMap;
+    public Dictionary<Unit, GameObject> UnitToGameObjectMap;
 
     /// <summary>
     /// Unit currently selected.
@@ -206,9 +206,9 @@ public class HexMap : MonoBehaviour, IQPathWorld
         // Hit spacebar to go to next turn.
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            if(units != null)
+            if(Units != null)
             {
-                foreach(Unit unit in units)
+                foreach(Unit unit in Units)
                 {
                     unit.DoTurn();
                 }
@@ -453,6 +453,8 @@ public class HexMap : MonoBehaviour, IQPathWorld
     /// <returns>Array of tiles within range around center tile</returns>
 	public Hex[] GetHexInRange(Hex centerHex, int range)
 	{
+        if(centerHex == null)
+            return null;
 		List<Hex> results = new List<Hex>();
 
 		for(int dx = -range; dx <= range; dx++)
@@ -474,10 +476,10 @@ public class HexMap : MonoBehaviour, IQPathWorld
     /// <param name="r">Row location</param>
     public void SpawnUnitAt(Unit unit, GameObject prefab, int q, int r)
     {
-        if(units == null)
+        if(Units == null)
         {
-            units = new HashSet<Unit>();
-            unitToGameObjectMap = new Dictionary<Unit, GameObject>();
+            Units = new HashSet<Unit>();
+            UnitToGameObjectMap = new Dictionary<Unit, GameObject>();
         }
 
         Hex hex = GetHexAt(q, r);
@@ -492,8 +494,8 @@ public class HexMap : MonoBehaviour, IQPathWorld
         );
         unit.OnUnitMoved += unitGameObject.GetComponent<UnitView>().OnUnitMoved;
 
-        units.Add(unit);
-        unitToGameObjectMap.Add(unit, unitGameObject);
+        Units.Add(unit);
+        UnitToGameObjectMap.Add(unit, unitGameObject);
     }
 
     /// <summary>
@@ -502,9 +504,9 @@ public class HexMap : MonoBehaviour, IQPathWorld
     /// <param name="unit">Unit to be destroyed</param>
     public void DestroyUnit(Unit unit)
     {
-        GameObject unitObject = unitToGameObjectMap[SelectedUnit];
-        units.Remove(SelectedUnit);
-        unitToGameObjectMap.Remove(SelectedUnit);
+        GameObject unitObject = UnitToGameObjectMap[SelectedUnit];
+        Units.Remove(SelectedUnit);
+        UnitToGameObjectMap.Remove(SelectedUnit);
         Destroy(unitObject);
 
         if(unit == SelectedUnit)
@@ -518,10 +520,11 @@ public class HexMap : MonoBehaviour, IQPathWorld
     /// <returns>Game object linked to tile</returns>
     public GameObject GetGameObjectFromTile(Hex tile)
     {
+        if(tile == null)
+            return null;
+
         if(hexToGameObjectMap.ContainsKey(tile))
-        {
             return hexToGameObjectMap[tile];
-        }
 
         return null;
     }
