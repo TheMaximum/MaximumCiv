@@ -55,6 +55,9 @@ public class Unit : IQPathUnit
     /// </summary>
     private Queue<Hex> path;
 
+    /// <summary>
+    /// Cost of the path for this unit.
+    /// </summary>
     private Dictionary<Hex, float> pathCost;
 
     /// <summary>
@@ -63,7 +66,13 @@ public class Unit : IQPathUnit
     /// 
     /// TODO: move to configuration
     /// </summary>
-    private const bool MOVEMENT_RULES_LIKE_CIV6 = true;
+    public const bool MOVEMENT_RULES_LIKE_CIV6 = true;
+
+    public Unit(int movement = 2)
+    {
+        Movement = movement;
+        MovementRemaining = movement;
+    }
 
     /// <summary>
     /// Change location of unit.
@@ -135,11 +144,24 @@ public class Unit : IQPathUnit
     {
         // TODO: Heal up?
 
+        ExecuteMovement(true);
+        MovementRemaining = Movement;
+    }
+
+    /// <summary>
+    /// Execute unit movement.
+    /// </summary>
+    /// <param name="endTurn">Is this the end of the turn?</param>
+    public void ExecuteMovement(bool endTurn = false)
+    {
         if(path == null || path.Count == 0)
             return;
 
+        if(MovementRemaining == 0)
+            return;
+
         // Determine which moves can be made.
-        float totalMovement = 0.0f;
+        float totalMovement = 0.0f + (1.0f - ((float)MovementRemaining / Movement));
         int moves = 0;
         bool movesDiscovered = false;
 
@@ -152,7 +174,8 @@ public class Unit : IQPathUnit
                 {
                     if(MOVEMENT_RULES_LIKE_CIV6)
                     {
-                        pathCost[hex] -= 1.0f;
+                        if(endTurn)
+                            pathCost[hex] -= 1.0f;
                     }
                     else
                     {
@@ -169,9 +192,14 @@ public class Unit : IQPathUnit
             }
             else
             {
-                pathCost[hex] -= 1.0f;
+                if(endTurn)
+                    pathCost[hex] -= 1.0f;
             }
         }
+
+        MovementRemaining -= (int)(totalMovement * Movement);
+        if(MovementRemaining < 0)
+            MovementRemaining = 0;
 
         // Move to next tile in queue.
         for(int makeMoves = 0; makeMoves < moves; makeMoves++)

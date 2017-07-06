@@ -139,7 +139,7 @@ public class MouseController : MonoBehaviour
                         Hex[] selectedUnitPathTiles = ((Hex[])selectedUnitPath[0]);
                         if(selectedUnitPathTiles.Length > 1)
                         {
-                            drawPath(selectedUnitPath);
+                            drawPath(selectedUnit, selectedUnitPath);
                         }
                     }
                 }
@@ -238,6 +238,7 @@ public class MouseController : MonoBehaviour
             {
                 // Complete unit movement.
                 selectedUnit.SetPath(unitPath);
+                selectedUnit.ExecuteMovement();
             }
 
             cancelUpdateFunction();
@@ -248,7 +249,7 @@ public class MouseController : MonoBehaviour
         {
             clearPathUI();
             unitPath = QPath.QPath.FindPath<Hex>(selectedUnit, selectedUnit.Hex, tileUnderMouse, Hex.CostEstimate);
-            drawPath(unitPath);
+            drawPath(selectedUnit, unitPath);
         }
     }
 
@@ -256,55 +257,53 @@ public class MouseController : MonoBehaviour
     /// Draw provided path with lines on map.
     /// </summary>
     /// <param name="path">Path to be drawn</param>
-    private void drawPath(ArrayList path)
+    private void drawPath(Unit unit, ArrayList path)
     {
-        if(((Hex[])path[0]).Length < 1)
+        Hex[] pathTiles = (Hex[])path[0];
+
+        if(pathTiles.Length < 1)
         {
             clearPathUI();
             return;
         }
 
-        Hex[] pathTiles = (Hex[])path[0];
-        Dictionary<Hex, float> pathCosts = (Dictionary<Hex, float>)path[1];
+        float turnMovement = (1.0f - ((float)unit.MovementRemaining / unit.Movement));
+        int turn = 1;
 
-        float previousTileTurns = 0.0f;
+        Dictionary<int, TextMesh> tileMeshes = new Dictionary<int, TextMesh>();
 
         for(int tileId = 0; tileId < pathTiles.Length; tileId++)
         {
             Hex tile = pathTiles[tileId];
+
             GameObject tileObject = map.GetGameObjectFromTile(tile);
+            tileObject.transform.GetChild(2).gameObject.SetActive(true);
 
-            if(tile != pathTiles[0])
+            if(tile == unit.Hex)
+                continue;
+
+            float tileMovement = ((float)tile.MovementCost / unit.Movement);
+            turnMovement += tileMovement;
+            if(turnMovement > 1.0f && Unit.MOVEMENT_RULES_LIKE_CIV6)
             {
-                TextMesh[] meshes = tileObject.GetComponentsInChildren<TextMesh>(true);
-                TextMesh mesh = meshes.First(textMesh => textMesh.name == "HexMovementLabel");
-
-                if(Mathf.Floor(pathCosts[tile]) > Mathf.Floor(previousTileTurns) &&
-                   Mathf.Floor(pathCosts[tile]) == Mathf.Ceil(pathCosts[tile]))
-                {                    
-                    tileObject.transform.GetChild(3).gameObject.SetActive(true);
-                    mesh.text = string.Format("{0}", pathCosts[tile]);
-                }
-                else if(pathTiles.Length > (tileId + 1) && Mathf.Ceil(pathCosts[pathTiles[tileId + 1]]) > Mathf.Ceil(pathCosts[tile]))
-                {
-                    tileObject.transform.GetChild(3).gameObject.SetActive(true);
-                    mesh.text = string.Format("{0}", Mathf.Ceil(pathCosts[tile]));
-                }
-
-                previousTileTurns = pathCosts[tile];
+                turn++;
+                turnMovement = 0.0f + tileMovement;
             }
 
-            tileObject.transform.GetChild(2).gameObject.SetActive(true);
+            TextMesh[] meshes = tileObject.GetComponentsInChildren<TextMesh>(true);
+            tileMeshes[turn] = meshes.First(textMesh => textMesh.name == "HexMovementLabel");
+
+            if(turnMovement > 1.0f && !Unit.MOVEMENT_RULES_LIKE_CIV6)
+            {
+                turn++;
+                turnMovement = 0.0f + tileMovement;
+            }
         }
 
-        Hex lastTile = pathTiles[(pathTiles.Length - 1)];
-        GameObject lastTileObject = map.GetGameObjectFromTile(lastTile);
-        if(!lastTileObject.transform.GetChild(3).gameObject.activeSelf)
+        foreach(KeyValuePair<int, TextMesh> mesh in tileMeshes)
         {
-            TextMesh[] meshes = lastTileObject.GetComponentsInChildren<TextMesh>(true);
-            TextMesh mesh = meshes.First(textMesh => textMesh.name == "HexMovementLabel");
-            lastTileObject.transform.GetChild(3).gameObject.SetActive(true);
-            mesh.text = string.Format("{0}", Mathf.Ceil(previousTileTurns));
+            mesh.Value.text = string.Format("{0}", mesh.Key);
+            mesh.Value.gameObject.SetActive(true);
         }
     }
 
