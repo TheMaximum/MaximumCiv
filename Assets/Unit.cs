@@ -4,6 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
+/// Possible unit types.
+/// </summary>
+public enum UnitType
+{
+    Settler,
+    Worker,
+    Melee,
+    Ranged
+}
+
+/// <summary>
 /// Class contains properties about units.
 /// </summary>
 public class Unit : IQPathUnit
@@ -12,6 +23,11 @@ public class Unit : IQPathUnit
     /// Unit name.
     /// </summary>
     public string Name = "Dwarf";
+
+    /// <summary>
+    /// Unit type.
+    /// </summary>
+    public UnitType Type;
 
     /// <summary>
     /// Unit hit points (min = 0, max = 100).
@@ -68,8 +84,10 @@ public class Unit : IQPathUnit
     /// </summary>
     public const bool MOVEMENT_RULES_LIKE_CIV6 = true;
 
-    public Unit(int movement = 2)
+    public Unit(UnitType type, int movement)
     {
+        Type = type;
+
         Movement = movement;
         MovementRemaining = movement;
     }

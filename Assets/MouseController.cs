@@ -59,11 +59,6 @@ public class MouseController : MonoBehaviour
     private float dragBarrier = 1.0f;
 
     /// <summary>
-    /// Unit currently selected.
-    /// </summary>
-    private Unit selectedUnit = null;
-
-    /// <summary>
     /// Current path for UnitMovement function.
     /// </summary>
     private ArrayList unitPath;
@@ -128,18 +123,18 @@ public class MouseController : MonoBehaviour
 
             // TODO: Implement cycling through multiple units on same tile.
             Unit[] units = tileUnderMouse.Units();
-            if(selectedUnit == null)
+            if(map.SelectedUnit == null)
             {
                 if(units != null && units.Length > 0)
                 {
-                    selectedUnit = units[0];
-                    ArrayList selectedUnitPath = selectedUnit.GetPath();
+                    map.SelectedUnit = units[0];
+                    ArrayList selectedUnitPath = map.SelectedUnit.GetPath();
                     if(selectedUnitPath != null && selectedUnitPath[0] != null)
                     {
                         Hex[] selectedUnitPathTiles = ((Hex[])selectedUnitPath[0]);
                         if(selectedUnitPathTiles.Length > 1)
                         {
-                            drawPath(selectedUnit, selectedUnitPath);
+                            drawPath(map.SelectedUnit, selectedUnitPath);
                         }
                     }
                 }
@@ -149,7 +144,7 @@ public class MouseController : MonoBehaviour
                 cancelUpdateFunction();
             }
         }
-        else if(Input.GetMouseButtonDown(1) && selectedUnit != null)
+        else if(Input.GetMouseButtonDown(1) && map.SelectedUnit != null)
         {
             updateCurrentFunction = updateUnitMovement;
         }
@@ -160,7 +155,7 @@ public class MouseController : MonoBehaviour
             lastMouseGroundPosition = getCurrentPosition(Input.mousePosition);
             updateCurrentFunction();
         }
-        else if(selectedUnit != null && Input.GetMouseButton(1))
+        else if(map.SelectedUnit != null && Input.GetMouseButton(1))
         {
             // Got unit, holding down right mouse button - unit moving mode.
 
@@ -204,7 +199,7 @@ public class MouseController : MonoBehaviour
         updateCurrentFunction = detectUpdateMode;
 
         // Also clean up UI if needed.
-        selectedUnit = null;
+        map.SelectedUnit = null;
         clearPathUI();
 
         GameObject tileObject = map.GetGameObjectFromTile(tileUnderMouse);
@@ -232,13 +227,13 @@ public class MouseController : MonoBehaviour
     /// </summary>
     private void updateUnitMovement()
     {
-        if(Input.GetMouseButtonUp(1) || selectedUnit == null)
+        if(Input.GetMouseButtonUp(1) || map.SelectedUnit == null)
         {
-            if(selectedUnit != null)
+            if(map.SelectedUnit != null)
             {
                 // Complete unit movement.
-                selectedUnit.SetPath(unitPath);
-                selectedUnit.ExecuteMovement();
+                map.SelectedUnit.SetPath(unitPath);
+                map.SelectedUnit.ExecuteMovement();
             }
 
             cancelUpdateFunction();
@@ -248,8 +243,8 @@ public class MouseController : MonoBehaviour
         if(unitPath == null || tileUnderMouse != lastTileUnderMouse)
         {
             clearPathUI();
-            unitPath = QPath.QPath.FindPath<Hex>(selectedUnit, selectedUnit.Hex, tileUnderMouse, Hex.CostEstimate);
-            drawPath(selectedUnit, unitPath);
+            unitPath = QPath.QPath.FindPath<Hex>(map.SelectedUnit, map.SelectedUnit.Hex, tileUnderMouse, Hex.CostEstimate);
+            drawPath(map.SelectedUnit, unitPath);
         }
     }
 

@@ -74,11 +74,11 @@ public class HexMapContinent : HexMap
 		// Now make sure all hex visuals are updated to match data
 		UpdateHexVisuals();
 
-        Unit unit = new Unit();
-        SpawnUnitAt(unit, UnitDwarfPrefab, 36, 15);
+        Unit unit = new Unit(UnitType.Settler, 2);
+        SpawnUnitAt(unit, UnitDwarfPrefab, 35, 14);
 
-        Unit newUnit = new Unit(4);
-        SpawnUnitAt(newUnit, UnitDwarfPrefab, 37, 15);
+        Unit newUnit = new Unit(UnitType.Melee, 4);
+        SpawnUnitAt(newUnit, UnitHorsePrefab, 37, 15);
     }
 
     /// <summary>

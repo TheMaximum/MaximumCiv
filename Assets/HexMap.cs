@@ -75,6 +75,11 @@ public class HexMap : MonoBehaviour, IQPathWorld
     /// </summary>
     public GameObject UnitDwarfPrefab;
 
+    /// <summary>
+    /// Prefab unit horse model.
+    /// </summary>
+    public GameObject UnitHorsePrefab;
+
     #endregion
 
     #region Height/Moisture settings
@@ -178,6 +183,11 @@ public class HexMap : MonoBehaviour, IQPathWorld
     /// </summary>
     private Dictionary<Unit, GameObject> unitToGameObjectMap;
 
+    /// <summary>
+    /// Unit currently selected.
+    /// </summary>
+    public Unit SelectedUnit = null;
+
     #endregion
 
     /// <summary>
@@ -202,6 +212,23 @@ public class HexMap : MonoBehaviour, IQPathWorld
                 {
                     unit.DoTurn();
                 }
+            }
+        }
+
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            if(SelectedUnit != null && SelectedUnit.Type == UnitType.Settler && SelectedUnit.MovementRemaining > 0)
+            {
+                // Settle a city.
+                Hex[] cityTiles = GetHexInRange(SelectedUnit.Hex, 1);
+                foreach(Hex cityTile in cityTiles)
+                {
+                    GameObject tileObject = GetGameObjectFromTile(cityTile);
+                    tileObject.transform.GetChild(4).gameObject.SetActive(true);
+                    tileObject.transform.GetChild(2).gameObject.SetActive(false);
+                }
+
+                DestroyUnit(SelectedUnit);
             }
         }
     }
@@ -467,6 +494,21 @@ public class HexMap : MonoBehaviour, IQPathWorld
 
         units.Add(unit);
         unitToGameObjectMap.Add(unit, unitGameObject);
+    }
+
+    /// <summary>
+    /// Removes the unit from the map and destroys the object.
+    /// </summary>
+    /// <param name="unit">Unit to be destroyed</param>
+    public void DestroyUnit(Unit unit)
+    {
+        GameObject unitObject = unitToGameObjectMap[SelectedUnit];
+        units.Remove(SelectedUnit);
+        unitToGameObjectMap.Remove(SelectedUnit);
+        Destroy(unitObject);
+
+        if(unit == SelectedUnit)
+            SelectedUnit = null;
     }
 
     /// <summary>
