@@ -25,10 +25,6 @@ public class CameraMotion : MonoBehaviour
     /// </summary>
     public void Update() 
 	{
-		// TODO: Code to click-and-drag camera
-		// TODO: WASD
-		// TODO: Zoom in and out
-
 		CheckForMovement();
 	}
 

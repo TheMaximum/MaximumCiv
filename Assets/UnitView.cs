@@ -33,6 +33,9 @@ public class UnitView : MonoBehaviour
     /// </summary>
     private long lastMillis;
 
+    /// <summary>
+    /// Movement queue for the unit.
+    /// </summary>
     private Queue<Hex> movementQueue;
 
     /// <summary>

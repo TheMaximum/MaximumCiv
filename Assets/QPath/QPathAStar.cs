@@ -35,6 +35,9 @@ namespace QPath
         /// </summary>
         private Queue<T> path;
 
+        /// <summary>
+        /// Calculated costs for path.
+        /// </summary>
         private Dictionary<T, float> gScore = new Dictionary<T, float>();
 
         /// <summary>

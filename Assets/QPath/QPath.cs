@@ -37,5 +37,11 @@ namespace QPath
         }
     }
 
+    /// <summary>
+    /// Function to estimate cost of movement from tile A to tile B.
+    /// </summary>
+    /// <param name="a">Tile A</param>
+    /// <param name="b">Tile B</param>
+    /// <returns>Estimated cost to move from A to B</returns>
     public delegate float CostEstimateDelegate(IQPathTile a, IQPathTile b);
 }

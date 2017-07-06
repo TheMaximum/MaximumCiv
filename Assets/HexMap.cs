@@ -7,7 +7,7 @@ using QPath;
 /// <summary>
 /// Class handling the tile map.
 /// </summary>
-public class HexMap : MonoBehaviour, IQPathWorld 
+public class HexMap : MonoBehaviour 
 {
     #region Meshes, Materials and GameObjects
     /// <summary>
@@ -199,7 +199,7 @@ public class HexMap : MonoBehaviour, IQPathWorld
     }
 
     /// <summary>
-    /// TESTING: Do Turn.
+    /// TESTING: Do Turn / Settle City.
     /// </summary>
     public void Update()
     {

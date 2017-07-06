@@ -87,9 +87,6 @@ public class Hex : IQPathTile
     /// </summary>
     private static readonly float WIDTH_MULTIPLIER = (float)(Math.Sqrt(3) / 2);
 
-    // TODO: Property to track hex type (plains, grasslands, etc...)
-    // TODO: Property to track hex detail (mine, plantation, etc...)
-
     /// <summary>
     /// Tile radius size.
     /// </summary>
@@ -120,6 +117,10 @@ public class Hex : IQPathTile
 		this.S = -(column + row);
 	}
 
+    /// <summary>
+    /// Get basic class information in a string.
+    /// </summary>
+    /// <returns>Basic class information</returns>
     public override string ToString()
     {
         return String.Format("Hex({0},{1})", Q, R);
